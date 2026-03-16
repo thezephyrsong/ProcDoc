@@ -356,11 +356,11 @@ local ACTION_PROCS = {
             spellName       = "Lacerate"
         },
         {
-            buffName        = "Baited Shot",
-            texture         = "Interface\\Icons\\Inv_Misc_Food_66",
+            buffName        = "Kill Command",
+            texture         = "Interface\\Icons\\ability_hunter_killcommand",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterBaitedShot.tga",
             alertStyle      = "TOP",
-            spellName       = "Baited Shot"
+            spellName       = "Kill Command"
         }
     },
     ["PALADIN"] = {
