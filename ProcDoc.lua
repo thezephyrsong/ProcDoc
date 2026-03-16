@@ -198,7 +198,6 @@ local PROC_DATA = {
             texture          = "Interface\\Icons\\Ability_Hunter_LockAndLoad",
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\Lock_and_Load.blp",
             alertStyle       = "TOP",
-            duration         = 10,
         },
         {
             -- Experimental Ammunition (Fire): Aimed Shot deals +5% damage as Fire.
@@ -406,6 +405,7 @@ local ACTION_PROC_DEFAULT_DURATIONS = {
     ["Arcane Surge"]    = 4,
     ["Lacerate"]        = 4,
     ["Baited Shot"]     = 4,
+    ["Lock and Load"]   = 10,
 }
 
 -- Hot Streak (Turtle WoW custom, stack-based visual) constants (Vanilla 1.12 compatible logic)
