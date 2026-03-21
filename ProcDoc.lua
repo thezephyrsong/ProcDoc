@@ -205,7 +205,7 @@ local PROC_DATA = {
             buffName         = "Poisonous Ammunition",
             texture          = nil,
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\DruidNaturesGrace.tga",
-            alertStyle       = "TOP",
+            alertStyle       = "TOP_ROTATED",
         },
         {
             buffName         = "Enchanted Ammunition",
