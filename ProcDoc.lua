@@ -340,7 +340,7 @@ local ACTION_PROCS = {
             buffName        = "Lacerate",
             texture         = "Interface\\Icons\\Spell_Lacerate_1c",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterMongooseBite.tga",
-            alertStyle      = "SIDES2",
+            alertStyle      = "SIDES",
             spellName       = "Lacerate"
         },
         {
