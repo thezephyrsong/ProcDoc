@@ -187,44 +187,25 @@ local PROC_DATA = {
             buffName         = "Quick Shots",
             texture          = "Interface\\Icons\\Ability_Warrior_InnerRage",
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\HunterQuickShots.tga",
-            alertStyle       = "SIDES",
+            alertStyle       = "SIDES2",
         },
         {
-            -- Triggered by critical strikes from Steady Shot, Aimed Shot, or Arcane Shot.
-            -- Resets Aimed Shot cooldown and reduces its cast time by 1 second, causing it
-            -- to damage all enemies between you and the target. Lasts 10 seconds or until
-            -- Aimed Shot is cast.
-            buffName         = "Lock and Load",
-            texture          = "Interface\\Icons\\Ability_Hunter_LockAndLoad",
-            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\Lock_and_Load.blp",
+            buffName         = "Explosive Ammunition",
+            texture          = nil,
+            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\impact.blp",
             alertStyle       = "TOP",
         },
         {
-            -- Experimental Ammunition (Fire): Aimed Shot deals +5% damage as Fire.
-            -- Empowers next Multi-Shot to explode for 20% ranged weapon damage in a 5yd radius.
-            -- Cycles Fire -> Arcane -> Nature. Only one ammo type active at a time. Lasts 60 seconds.
-            buffName         = "Fire Ammunition",
-            texture          = "Interface\\Icons\\Spell_Fire_FireBolt02",
-            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\impact.blp",
-            alertStyle       = "SIDES",
-        },
-        {
-            -- Experimental Ammunition (Arcane): Aimed Shot deals +5% damage as Arcane.
-            -- Empowers next Arcane Shot for 100% increased damage and reduces target magic
-            -- resistance by 3% for 6 seconds. Lasts 60 seconds.
-            buffName         = "Arcane Ammunition",
-            texture          = "Interface\\Icons\\Spell_Arcane_Blast",
-            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\serendipity.blp",
-            alertStyle       = "SIDES",
-        },
-        {
-            -- Experimental Ammunition (Nature): Aimed Shot deals +5% damage as Nature.
-            -- Empowers next Serpent Sting for 100% increased damage and applies a corrosive
-            -- poison reducing target armor by 240 for 15 seconds. Lasts 60 seconds.
-            buffName         = "Nature Ammunition",
-            texture          = "Interface\\Icons\\Spell_Nature_NatureTouchGrow",
+            buffName         = "Poisonous Ammunition",
+            texture          = nil,
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\natures_grace.blp",
-            alertStyle       = "SIDES",
+            alertStyle       = "TOP",
+        },
+        {
+            buffName         = "Enchanted Ammunition",
+            texture          = nil,
+            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\serendipity.blp",
+            alertStyle       = "TOP",
         },
     },
     ["WARRIOR"] = {
@@ -349,18 +330,25 @@ local ACTION_PROCS = {
     },
     ["HUNTER"] = {
         {
-            buffName        = "Lacerate", 
+            buffName        = "Lock and Load",
+            texture         = "Interface\\Icons\\Ability_Hunter_LockAndLoad",
+            alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\Lock_and_Load.blp",
+            alertStyle      = "TOP",
+            spellName       = "Aimed Shot",
+        },
+        {
+            buffName        = "Lacerate",
             texture         = "Interface\\Icons\\Spell_Lacerate_1c",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterMongooseBite.tga",
             alertStyle      = "SIDES2",
             spellName       = "Lacerate"
         },
         {
-            buffName        = "Kill Command",
-            texture         = "Interface\\Icons\\ability_hunter_killcommand",
+            buffName        = "Baited Shot",
+            texture         = "Interface\\Icons\\Inv_Misc_Food_66",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterBaitedShot.tga",
             alertStyle      = "TOP",
-            spellName       = "Kill Command"
+            spellName       = "Baited Shot"
         }
     },
     ["PALADIN"] = {
@@ -476,7 +464,7 @@ local function CreateAlertFrame(style)
     alertObj.pulseDir      = alphaStep
 
     -- Decide frame size and positions based on style
-    if style == "TOP" or style == "TOP2" then
+    if style == "TOP" or style == "TOP2" or style == "TOP_ROTATED" then
         alertObj.baseWidth  = 256
         alertObj.baseHeight = 128
 
@@ -486,6 +474,9 @@ local function CreateAlertFrame(style)
         tex:SetWidth(alertObj.baseWidth)
         tex:SetHeight(alertObj.baseHeight)
         tex:SetAlpha(0)
+        if style == "TOP_ROTATED" then
+            tex:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0)
+        end
         tex:Hide()
         table.insert(alertObj.textures, tex)
     elseif style == "SIDES" or style == "SIDES2" then
@@ -565,7 +556,7 @@ end
 local function ProcDoc_ReanchorAlert(alertObj)
     if not alertObj or not alertObj.textures then return end
     local style = alertObj.style
-    if style == "TOP" or style == "TOP2" then
+    if style == "TOP" or style == "TOP2" or style == "TOP_ROTATED" then
         local tex = alertObj.textures[1]
         if tex then
             tex:ClearAllPoints()
@@ -833,7 +824,7 @@ local function CheckProcs()
 
             for _, procInfo in ipairs(normalProcs) do
                 if ProcDocDB.procsEnabled[procInfo.buffName] ~= false then
-                    if (buffTexture == procInfo.texture) and (buffName == procInfo.buffName) then
+                    if (procInfo.texture == nil or buffTexture == procInfo.texture) and (buffName == procInfo.buffName) then
                         table.insert(activeBuffProcs, procInfo)
                         activeBuffNames[procInfo.buffName] = true
                         -- Store stack count if any (>=1 valid)
@@ -1375,7 +1366,7 @@ local testProcAlerts = {}
 local function RefreshTestProc()
     for buffName, alertObj in pairs(testProcAlerts) do
         if alertObj.isActive then
-            if alertObj.style == "TOP" or alertObj.style == "TOP2" then
+            if alertObj.style == "TOP" or alertObj.style == "TOP2" or alertObj.style == "TOP_ROTATED" then
                 local tex = alertObj.textures[1]
                 tex:ClearAllPoints()
                 local offsetY = (alertObj.style == "TOP2") and (topOffset + 50) or topOffset
@@ -1412,7 +1403,7 @@ local function RefreshTestProc()
         if not maxScale then maxScale = 1.0 end
 
         -- Re-anchor the test proc based on its style
-        if testProcAlertObj.style == "TOP" or testProcAlertObj.style == "TOP2" then
+        if testProcAlertObj.style == "TOP" or testProcAlertObj.style == "TOP2" or testProcAlertObj.style == "TOP_ROTATED" then
             local tex = testProcAlertObj.textures[1]
             tex:ClearAllPoints()
             local offsetY = (testProcAlertObj.style == "TOP2") and (topOffset + 50) or topOffset
@@ -1501,7 +1492,7 @@ local function ShowTestBuffAlert(procInfo)
     end
 
     -- Now re-anchor based on style
-    if style == "TOP" or style == "TOP2" then
+    if style == "TOP" or style == "TOP2" or style == "TOP_ROTATED" then
         local tex = alertObj.textures[1]
         local offsetY = (style == "TOP2") and (topOffset + 50) or topOffset
         tex:ClearAllPoints()
