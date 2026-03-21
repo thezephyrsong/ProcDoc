@@ -265,9 +265,9 @@ local PROC_DATA = {
             -- Triggered by Crusader Strike. Reduces damage of the next blocked attack.
             -- Lasts 10 seconds.
             buffName         = "Zealous Defence",
-            texture          = "Interface\\Icons\\Ability_Warrior_ShieldReflection",
+            texture          = nil,
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\Grand_Crusader.tga",
-            alertStyle       = "SIDES",
+            alertStyle       = "SIDES2",
         },
     },
     ["ROGUE"] = {
