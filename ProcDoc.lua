@@ -193,7 +193,7 @@ local PROC_DATA = {
             buffName         = "Lock and Load",
             texture          = nil,
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\Lock_and_Load.blp",
-            alertStyle       = "TOP",
+            alertStyle       = "TOP2",
         },
         {
             buffName         = "Explosive Ammunition",
