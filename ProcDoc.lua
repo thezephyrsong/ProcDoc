@@ -193,7 +193,7 @@ local PROC_DATA = {
             buffName         = "Lock and Load",
             texture          = nil,
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\Lock_and_Load.blp",
-            alertStyle       = "SIDES2",
+            alertStyle       = "TOP",
         },
         {
             buffName         = "Explosive Ammunition",
@@ -204,7 +204,7 @@ local PROC_DATA = {
         {
             buffName         = "Poisonous Ammunition",
             texture          = nil,
-            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\natures_grace.blp",
+            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\DruidNaturesGrace.tga",
             alertStyle       = "TOP",
         },
         {
@@ -347,7 +347,7 @@ local ACTION_PROCS = {
             buffName        = "Lacerate",
             texture         = "Interface\\Icons\\Spell_Lacerate_1c",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterMongooseBite.tga",
-            alertStyle      = "SIDES2",
+            alertStyle      = "SIDES",
             spellName       = "Lacerate"
         },
         {
