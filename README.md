@@ -120,8 +120,10 @@ You can experiment with these in the **`/procdoc`** panel. Changes are saved aut
   <h3><strong>Hunter</strong></h3>
   <img src="./img/Hunter.png" alt="Hunter">
     <li><strong>Quick Shots</strong></li>
+    <li><strong>Lock and Load</strong></li>
+    <li><strong>Experimental Ammunitions</strong></li>
     <li><strong>Lacerate</strong></li>
-    <li><strong>Baited Shot</strong></li>
+    <li><strong>Scent of Blood</strong></li>
 
   <h3><strong>Paladin</strong></h3>
   <img src="./img/Paladin.png" alt="Paladin">
@@ -129,6 +131,7 @@ You can experiment with these in the **`/procdoc`** panel. Changes are saved aut
     <li><strong>Daybreak</strong></li>
     <li><strong>Hammer of Justice</strong></li>
     <li><strong>Judgement</strong></li>
+    <li><strong>Zealous Defense</strong></li>
 </div>
 <!-- END: Centered Supported Procs -->
 
