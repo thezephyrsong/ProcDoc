@@ -1381,6 +1381,7 @@ end)
 -- Also old-style event usage if needed:
 local auraFrame = CreateFrame("Frame", "ProcDocAuraFrame", UIParent)
 auraFrame:RegisterEvent("PLAYER_AURAS_CHANGED")
+auraFrame:RegisterEvent("PET_BAR_UPDATE")  -- fires when pet buffs change
 auraFrame:SetScript("OnEvent", function()
     CheckProcs()
 
