@@ -193,7 +193,7 @@ local PROC_DATA = {
             buffName         = "Lock and Load",
             texture          = nil,
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\Lock_and_Load.blp",
-            alertStyle       = "TOP2",
+            alertStyle       = "SIDES2",
         },
         {
             buffName         = "Explosive Ammunition",
@@ -204,8 +204,8 @@ local PROC_DATA = {
         {
             buffName         = "Poisonous Ammunition",
             texture          = nil,
-            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\DruidNaturesGrace.tga",
-            alertStyle       = "TOP_ROTATED",
+            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\natures_grace.blp",
+            alertStyle       = "TOP",
         },
         {
             buffName         = "Enchanted Ammunition",
@@ -265,9 +265,9 @@ local PROC_DATA = {
             -- Triggered by Crusader Strike. Reduces damage of the next blocked attack.
             -- Lasts 10 seconds.
             buffName         = "Zealous Defence",
-            texture          = nil,
+            texture          = "Interface\\Icons\\Ability_Warrior_ShieldReflection",
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\Grand_Crusader.tga",
-            alertStyle       = "SIDES2",
+            alertStyle       = "SIDES",
         },
     },
     ["ROGUE"] = {
@@ -282,6 +282,22 @@ local PROC_DATA = {
             texture          = "Interface\\Icons\\INV_Misc_Key_03",
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\RogueTricksoftheTrade.tga",
             alertStyle       = "TOP",
+        },
+    },
+}
+
+-- Pet buff proc definitions (Hunter only for now).
+-- Scanned separately using UnitBuff("pet", i) since pet buffs are not accessible
+-- via GetPlayerBuffTexture. Texture matching uses nil to match on buff name alone.
+local PET_PROC_DATA = {
+    ["HUNTER"] = {
+        {
+            -- Triggered by attacks (5/10/15% chance per rank of Scent of Blood talent).
+            -- Sends the pet into a rage dealing 40% additional damage for 8 seconds.
+            buffName         = "Scent of Blood",
+            texture          = nil,
+            alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\WarriorEnrage.tga",
+            alertStyle       = "SIDES2",
         },
     },
 }
@@ -347,7 +363,7 @@ local ACTION_PROCS = {
             buffName        = "Lacerate",
             texture         = "Interface\\Icons\\Spell_Lacerate_1c",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterMongooseBite.tga",
-            alertStyle      = "SIDES",
+            alertStyle      = "SIDES2",
             spellName       = "Lacerate"
         },
         {
@@ -761,6 +777,7 @@ local _, playerClass = UnitClass("player")
 
 local normalProcs  = PROC_DATA[playerClass] or {}
 local actionProcs  = ACTION_PROCS[playerClass] or {}  -- e.g. Overpower
+local petProcs     = PET_PROC_DATA[playerClass] or {}  -- pet buff procs e.g. Scent of Blood
 
 -- Merge them into one big “classProcs” table
 local classProcs = {}
@@ -769,6 +786,9 @@ for _, p in ipairs(normalProcs) do
 end
 for _, q in ipairs(actionProcs) do
     table.insert(classProcs, q)
+end
+for _, r in ipairs(petProcs) do
+    table.insert(classProcs, r)
 end
 
 -- 7) Buff-based detection
@@ -851,6 +871,37 @@ local function CheckProcs()
                     local stacks = apiStacks or stackGuess
                     if not stacks or stacks < 1 then stacks = 1 end
                     if stacks > hotStreakStacks then hotStreakStacks = stacks end
+                end
+            end
+        end
+    end
+
+    -- 2b) Scan pet buffs if the player has a pet and there are pet procs defined
+    if UnitExists("pet") and #petProcs > 0 then
+        for i = 1, 40 do
+            local petBuffTexture = UnitBuff("pet", i)
+            if not petBuffTexture then break end
+
+            -- Get buff name via tooltip scan
+            local petBuffName = ""
+            ProcDocScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+            if ProcDocScanTooltip.SetUnitBuff then
+                ProcDocScanTooltip:SetUnitBuff("pet", i)
+            else
+                -- Fallback: some builds may not have SetUnitBuff; match on texture only
+            end
+            petBuffName = (ProcDocScanTooltipTextLeft1 and ProcDocScanTooltipTextLeft1:GetText()) or ""
+            ProcDocScanTooltip:Hide()
+
+            for _, procInfo in ipairs(petProcs) do
+                if ProcDocDB.procsEnabled[procInfo.buffName] ~= false then
+                    local textureMatch = (procInfo.texture == nil) or (petBuffTexture == procInfo.texture)
+                    local nameMatch    = (petBuffName == procInfo.buffName)
+                    -- If we got a name, require name+texture match; otherwise fall back to texture only
+                    if textureMatch and (petBuffName == "" or nameMatch) then
+                        table.insert(activeBuffProcs, procInfo)
+                        activeBuffNames[procInfo.buffName] = true
+                    end
                 end
             end
         end
