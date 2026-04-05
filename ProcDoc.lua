@@ -1381,10 +1381,21 @@ end)
 -- Also old-style event usage if needed:
 local auraFrame = CreateFrame("Frame", "ProcDocAuraFrame", UIParent)
 auraFrame:RegisterEvent("PLAYER_AURAS_CHANGED")
-auraFrame:RegisterEvent("PET_BAR_UPDATE")  -- fires when pet buffs change
+-- Pet buff changes don't fire PLAYER_AURAS_CHANGED; register pet-specific events.
+-- PET_UI_UPDATE fires on most vanilla-era servers when the pet's buffs change.
+-- UNIT_AURA (with arg1 == "pet") fires on some servers.
+auraFrame:RegisterEvent("PET_UI_UPDATE")
+auraFrame:RegisterEvent("UNIT_AURA")
 auraFrame:SetScript("OnEvent", function()
+    -- For UNIT_AURA, only re-check when it's the pet (or player) that changed.
+    if event == "UNIT_AURA" then
+        if arg1 == "pet" or arg1 == "player" then
+            CheckProcs()
+        end
+        return
+    end
+    -- PLAYER_AURAS_CHANGED and PET_UI_UPDATE both just trigger a full re-check.
     CheckProcs()
-
 end)
 
 -- Class colors for chat messages
