@@ -295,7 +295,7 @@ local PET_PROC_DATA = {
             -- Triggered by attacks (5/10/15% chance per rank of Scent of Blood talent).
             -- Sends the pet into a rage dealing 40% additional damage for 8 seconds.
             buffName         = "Scent of Blood",
-            texture          = nil,
+            texture          = "ability_hunter_goforthethroat",
             alertTexturePath = "Interface\\AddOns\\ProcDoc\\img\\WarriorEnrage.tga",
             alertStyle       = "SIDES2",
         },
