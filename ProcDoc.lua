@@ -355,7 +355,8 @@ local ACTION_PROCS = {
             texture         = "Interface\\Icons\\ability_hunter_killcommand",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterBaitedShot.tga",
             alertStyle      = "TOP",
-            spellName       = "Kill Command"
+            spellName       = "Kill Command",
+            useSpellbook     = true,
         }
     },
     ["PALADIN"] = {
@@ -1161,7 +1162,7 @@ end
 
 -- Spellbook-driven action proc checks (for abilities that should show when off cooldown while in combat)
 local function UpdateSpellbookActionProcs()
-    if playerClass ~= "PALADIN" then return end
+    if playerClass ~= "PALADIN" and playerClass ~= "HUNTER" then return end
     for _, actionProc in ipairs(actionProcs) do
         if actionProc.useSpellbook and ProcDocDB.procsEnabled[actionProc.buffName] ~= false then
             local inCombat = (UnitAffectingCombat and UnitAffectingCombat("player")) or inCombatFlag
@@ -1270,7 +1271,7 @@ spellbookCheckFrame:SetScript("OnUpdate", function()
     if (now - lastSpellbookCheck) >= SPELLBOOK_CHECK_INTERVAL then
         -- Only check if in combat AND we have spellbook procs that are currently down
         local inCombat = (UnitAffectingCombat and UnitAffectingCombat("player")) or inCombatFlag
-        if inCombat and playerClass == "PALADIN" then
+        if inCombat and playerClass == "PALADIN" or playerClass == "HUNTER" then
             local needsCheck = false
             -- Check if any spellbook-based procs are currently down but enabled
             for _, actionProc in ipairs(actionProcs) do
