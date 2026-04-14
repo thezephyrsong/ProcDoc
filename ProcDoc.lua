@@ -350,6 +350,9 @@ local ACTION_PROCS = {
             alertStyle      = "SIDES",
             spellName       = "Lacerate"
         },
+        -- Kill Command behaves inconsistently: IsUsableAction returns 1 if it has been triggered, independently if it is on CD or not.
+        -- I decided to create an alternative method to check if it is in CD using the spellbook
+        -- If this server-side issue is fixed, this can be easily reverted
         {
             buffName        = "Kill Command",
             texture         = "Interface\\Icons\\ability_hunter_killcommand",
@@ -1064,7 +1067,6 @@ end
 local actionProcStates = {}
 
 local function ShowActionProcAlert(actionProc)
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FFFFProcDoc|r: ShowActionProcAlert called for "..tostring(actionProc.spellName))
     -- Sync from DB so we don't rely on options frame being opened first
     if ProcDoc_LoadGlobalsFromDB then ProcDoc_LoadGlobalsFromDB() end
     local spellName  = actionProc.spellName or "UnknownSpell"
@@ -1126,7 +1128,6 @@ local function ShowActionProcAlert(actionProc)
 end
 
 local function HideActionProcAlert(actionProc)
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FFFFProcDoc|r: HideActionProcAlert called for "..tostring(actionProc.spellName))
     local spellName = actionProc.spellName or "UnknownSpell"
     local state     = actionProcStates[spellName]
     if not state or not state.isActive then
@@ -1164,7 +1165,7 @@ end
 
 -- Spellbook-driven action proc checks (for abilities that should show when off cooldown while in combat)
 local function UpdateSpellbookActionProcs()
-    if playerClass ~= "PALADIN" and playerClass ~= "HUNTER" then return end
+    if playerClass ~= "PALADIN" then return end
     for _, actionProc in ipairs(actionProcs) do
         if actionProc.useSpellbook and ProcDocDB.procsEnabled[actionProc.buffName] ~= false then
             local inCombat = (UnitAffectingCombat and UnitAffectingCombat("player")) or inCombatFlag
@@ -1227,7 +1228,6 @@ local function FindActionSlotAndCheck(actionProc)
     end
 
     local usable = IsUsableAction(foundSlot)
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FFFFProcDoc|r: slot="..tostring(foundSlot).." usable="..tostring(usable))
     if usable and actionProc.useSpellbookForCooldown then
         local idx = FindSpellBookIndexByName(actionProc.spellName)
         if idx then
@@ -1284,7 +1284,7 @@ spellbookCheckFrame:SetScript("OnUpdate", function()
     if (now - lastSpellbookCheck) >= SPELLBOOK_CHECK_INTERVAL then
         -- Only check if in combat AND we have spellbook procs that are currently down
         local inCombat = (UnitAffectingCombat and UnitAffectingCombat("player")) or inCombatFlag
-        if inCombat and playerClass == "PALADIN" or playerClass == "HUNTER" then
+        if inCombat and playerClass == "PALADIN" then
             local needsCheck = false
             -- Check if any spellbook-based procs are currently down but enabled
             for _, actionProc in ipairs(actionProcs) do
