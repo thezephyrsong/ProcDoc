@@ -1064,6 +1064,7 @@ end
 local actionProcStates = {}
 
 local function ShowActionProcAlert(actionProc)
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FFFFProcDoc|r: ShowActionProcAlert called for "..tostring(actionProc.spellName))
     -- Sync from DB so we don't rely on options frame being opened first
     if ProcDoc_LoadGlobalsFromDB then ProcDoc_LoadGlobalsFromDB() end
     local spellName  = actionProc.spellName or "UnknownSpell"
@@ -1225,6 +1226,7 @@ local function FindActionSlotAndCheck(actionProc)
     end
 
     local usable = IsUsableAction(foundSlot)
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FFFFProcDoc|r: slot="..tostring(foundSlot).." usable="..tostring(usable))
     if usable then
         if not state.isActive then
             ShowActionProcAlert(actionProc)
