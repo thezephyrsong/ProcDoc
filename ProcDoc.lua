@@ -1126,6 +1126,7 @@ local function ShowActionProcAlert(actionProc)
 end
 
 local function HideActionProcAlert(actionProc)
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FFFFProcDoc|r: HideActionProcAlert called for "..tostring(actionProc.spellName))
     local spellName = actionProc.spellName or "UnknownSpell"
     local state     = actionProcStates[spellName]
     if not state or not state.isActive then
