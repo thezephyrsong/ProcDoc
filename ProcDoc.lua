@@ -351,11 +351,11 @@ local ACTION_PROCS = {
             spellName       = "Lacerate"
         },
         {
-            buffName        = "Baited Shot",
-            texture         = "Interface\\Icons\\Inv_Misc_Food_66",
+            buffName        = "Kill Command",
+            texture         = "Interface\\Icons\\ability_hunter_killcommand",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterBaitedShot.tga",
             alertStyle      = "TOP",
-            spellName       = "Baited Shot"
+            spellName       = "Kill Command"
         }
     },
     ["PALADIN"] = {
@@ -399,7 +399,7 @@ local ACTION_PROC_DEFAULT_DURATIONS = {
     ["Surprise Attack"] = 5,  
     ["Arcane Surge"]    = 4,
     ["Lacerate"]        = 4,
-    ["Baited Shot"]     = 4,
+    ["Kill Command"]    = 4,
 }
 
 -- Hot Streak (Turtle WoW custom, stack-based visual) constants (Vanilla 1.12 compatible logic)
