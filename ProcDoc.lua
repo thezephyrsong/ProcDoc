@@ -350,12 +350,16 @@ local ACTION_PROCS = {
             alertStyle      = "SIDES",
             spellName       = "Lacerate"
         },
+        -- Kill Command behaves inconsistently: IsUsableAction returns 1 if it has been triggered, independently if it is on CD or not.
+        -- I decided to create an alternative method to check if it is in CD using the spellbook
+        -- If this server-side issue is fixed, this can be easily reverted
         {
-            buffName        = "Baited Shot",
-            texture         = "Interface\\Icons\\Inv_Misc_Food_66",
+            buffName        = "Kill Command",
+            texture         = "Interface\\Icons\\ability_hunter_killcommand",
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterBaitedShot.tga",
             alertStyle      = "TOP",
-            spellName       = "Baited Shot"
+            spellName       = "Kill Command",
+            useSpellbookForCooldown     = true,
         }
     },
     ["PALADIN"] = {
@@ -399,7 +403,7 @@ local ACTION_PROC_DEFAULT_DURATIONS = {
     ["Surprise Attack"] = 5,  
     ["Arcane Surge"]    = 4,
     ["Lacerate"]        = 4,
-    ["Baited Shot"]     = 4,
+    ["Kill Command"]    = 4,
 }
 
 -- Hot Streak (Turtle WoW custom, stack-based visual) constants (Vanilla 1.12 compatible logic)
@@ -1224,6 +1228,16 @@ local function FindActionSlotAndCheck(actionProc)
     end
 
     local usable = IsUsableAction(foundSlot)
+    if usable and actionProc.useSpellbookForCooldown then
+        local idx = FindSpellBookIndexByName(actionProc.spellName)
+        if idx then
+            local start, duration, enable = GetSpellCooldown(idx, BOOKTYPE_SPELL or "spell")
+            if duration and duration > 1.5 then
+                usable = false
+            end
+        end
+    end
+    
     if usable then
         if not state.isActive then
             ShowActionProcAlert(actionProc)
