@@ -356,7 +356,7 @@ local ACTION_PROCS = {
             alertTexturePath= "Interface\\AddOns\\ProcDoc\\img\\HunterBaitedShot.tga",
             alertStyle      = "TOP",
             spellName       = "Kill Command",
-            useSpellbook     = true,
+            useSpellbookForCooldown     = true,
         }
     },
     ["PALADIN"] = {
@@ -1228,6 +1228,16 @@ local function FindActionSlotAndCheck(actionProc)
 
     local usable = IsUsableAction(foundSlot)
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FFFFProcDoc|r: slot="..tostring(foundSlot).." usable="..tostring(usable))
+    if usable and actionProc.useSpellbookForCooldown then
+        local idx = FindSpellBookIndexByName(actionProc.spellName)
+        if idx then
+            local start, duration, enable = GetSpellCooldown(idx, BOOKTYPE_SPELL or "spell")
+            if duration and duration > 1.5 then
+                usable = false
+            end
+        end
+    end
+    
     if usable then
         if not state.isActive then
             ShowActionProcAlert(actionProc)
